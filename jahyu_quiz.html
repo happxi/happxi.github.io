@@ -1,412 +1,659 @@
-<!DOCTYPE html>  
-<html lang="ko">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>나의 자휴찾기 테스트 | 자휴레터</title>  
-    <style>  
-        body {  
-            font-family: 'Arial', sans-serif;  
-            background-color: #FFF0F5;  
-            color: #333;  
-            margin: 0;  
-            padding: 20px;  
-            text-align: center;  
-            max-width: 600px;  
-            margin: 0 auto;  
-        }  
-        .page {  
-            padding: 20px;  
-            background-color: #ffffff;  
-            border-radius: 15px;  
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);  
-            margin-top: 20px;  
-        }  
-        h1 {  
-            color: #FF69B4;  
-            font-size: 1.8em;  
-        }  
-        h2 {  
-            color: #4B0082;  
-        }  
-        .subtitle {  
-            font-size: 1.2em;  
-            color: #888;  
-            margin-bottom: 25px;  
-        }  
-        button {  
-            background-color: #FF69B4;  
-            color: #fff;  
-            border: none;  
-            padding: 12px 25px;  
-            margin: 8px 0;  
-            border-radius: 25px;  
-            cursor: pointer;  
-            font-size: 1em;  
-            width: 100%;  
-            transition: background-color 0.3s;  
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);  
-        }  
-        button:hover {  
-            background-color: #FF1493;  
-        }  
-        .secondary-btn {  
-            background-color: #f0f0f0;  
-            color: #666;  
-        }  
-        .secondary-btn:hover {  
-            background-color: #ddd;  
-            color: #333;  
-        }  
-        .options-container button {  
-            background-color: #fff;  
-            border: 2px solid #FF69B4;  
-            color: #4B0082;  
-            width: 100%;  
-            text-align: left;  
-            padding: 15px;  
-            margin-bottom: 10px;  
-            transition: background-color 0.2s, border-color 0.2s;  
-        }  
-        .options-container button:hover {  
-            background-color: #FFE4E1;  
-            border-color: #FF69B4;  
-        }  
-        .progress-bar-container {  
-            width: 100%;  
-            background-color: #eee;  
-            border-radius: 5px;  
-            margin: 15px 0;  
-        }  
-        .progress-bar {  
-            height: 10px;  
-            background-color: #FF69B4;  
-            border-radius: 5px;  
-            transition: width 0.3s;  
-        }  
-        .result-title {  
-            color: #FF69B4;  
-        }  
-        #result-type-name {  
-            color: #000000;  
-            font-size: 1.8em;  
-            margin-top: 10px;  
-            line-height: 1.4;  
-        }  
-        .result-illustration-placeholder {  
-            margin: 20px 0;  
-            font-size: 5em;  
-        }  
-        hr {  
-            border: 0;  
-            height: 1px;  
-            background: #FFC0CB;  
-            margin: 20px 0;  
-        }  
-        .description {  
-            line-height: 1.6;  
-            margin: 20px 0;  
-        }  
-        .purple-text {  
-            color: #4B0082 !important;  
-            font-weight: bold;  
-        }  
-        .question-number {  
-            color: #FF69B4;  
-            font-weight: bold;  
-            margin-bottom: 20px;  
-        }  
-        .back-btn {  
-            background-color: #f0f0f0;  
-            color: #666;  
-            padding: 8px 12px;  
-            font-size: 1.2em;  
-            width: auto;  
-            min-width: 40px;  
-            border-radius: 50%;  
-            float: left;  
-        }  
-        .back-btn:hover {  
-            background-color: #ddd;  
-            color: #333;  
-        }  
-        .quiz-controls {  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-            margin-bottom: 15px;  
-        }  
-        .gift-btn {  
-            background: linear-gradient(135deg, #FF1493, #DC143C);  
-        }  
-        .gift-btn:hover {  
-            background: linear-gradient(135deg, #DC143C, #B22222);  
-        }  
-        .subscribe-btn {  
-            background: linear-gradient(135deg, #FF69B4, #FF1493);  
-        }  
-        .subscribe-btn:hover {  
-            background: linear-gradient(135deg, #FF1493, #DC143C);  
-        }  
-        .restart-btn {  
-            background-color: #87CEEB;  
-            color: #fff;  
-        }  
-        .restart-btn:hover {  
-            background-color: #87CEEB;  
-            color: #fff;  
-            opacity: 0.8;  
-        }  
-    </style>  
-</head>  
-<body>  
-  
-    <div id="intro-page" class="page active">  
-        <h1>나만의 힐링유형 찾기</h1>  
-        <p class="subtitle">나에게 딱 맞는 휴식 유형은?</p>  
-        <div class="result-illustration-placeholder">  
-            🎉  
-        </div>  
-        <button onclick="startQuiz()">테스트 시작하기</button>  
-    </div>  
-  
-    <div id="quiz-page" class="page" style="display: none;">  
-        <div class="progress-bar-container">  
-            <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>  
-        </div>  
-        <div class="quiz-controls">  
-            <button id="back-btn" class="back-btn" onclick="goBack()">←</button>  
-            <p class="question-number"><span id="current-q-num">1</span> / 6</p>  
-        </div>  
-        <h2 id="question-text"></h2>  
-        <div id="options-container" class="options-container"></div>  
-    </div>  
-  
-    <div id="result-page" class="page" style="display: none;">  
-        <h2 class="result-title">햅삐님의 휴식 유형은?</h2>  
-        <h1 id="result-type-name"></h1>  
-        <div class="result-illustration-placeholder">  
-            <div id="result-illustration"></div>  
-        </div>  
-        <p id="result-description" class="description"></p>  
-  
-        <hr>  
-  
-        <button id="gift-btn" class="gift-btn" onclick="goToGift()">🎁 구독하고 맞춤형 힐링 받기</button>   
-        <button id="subscribe-btn" class="subscribe-btn" onclick="goToSubscribe()">💌 내 스타일 선물받기</button>  
-        <button id="share-btn" class="secondary-btn" onclick="shareResult()">👯 친구랑 같이 해보기</button>  
-          
-        <hr>  
-  
-        <button id="restart-btn" class="restart-btn" onclick="restartQuiz()">🔄 다시 테스트하기</button>  
-    </div>  
-  
-    <script>  
-        const questions = [  
-            { q: "드디어 주말이다! 뭐부터 할까?",   
-            options: [  
-                { text: "뭐하긴~ 누워서 티빙부터 켜야지!", type: 'A' },  
-                { text: "미리 찾아둔 느좋카페로 출근!", type: 'B' },  
-                { text: "밀린 집안일이랑 정리부터 하자!", type: 'C' },  
-                { text: "모처럼 스피커 틀고 커피도 내려볼까~", type: 'D' }  
-            ] },  
-            { q: "스트레스 해소엔 이게 최고!",   
-            options: [  
-                { text: "일단 무음모드! 혼자만의 시간이 필요해", type: 'A' },  
-                { text: "친구랑 당장 만나서 시원하게 털어놓아야지!", type: 'B' },  
-                { text: "일단 마음이 불안한 이유를 적어보자...", type: 'C' },  
-                { text: "일단 배민 켜고 욕조에 러쉬밤부터 풀어보자", type: 'D' }  
-            ] },  
-            { q: "일주일의 휴가가 주어진다면, 어디로 가볼까?",   
-            options: [  
-                { text: "무조건 집!! 유튜브로 떠나는 여행이 최고지", type: 'A' },  
-                { text: "포르투갈? 스페인? 아 어디부터 가지?", type: 'B' },  
-                { text: "일단 계획을 세워보자... 예산이 얼마더라...", type: 'C' },  
-                { text: "신상맛집 느좋카페 팝업까지 풀코스 고!", type: 'D' }  
-            ] },  
-            { q: "친구가 '너답지 않아'라고 말할 때는 언제일까?",   
-            options: [  
-                { text: "며칠째 카톡 답장이 없을 때", type: 'A' },  
-                { text: "갑자기 집순이가 되었을 때", type: 'B' },  
-                { text: "엑셀로 계획 안 세우고 여행 갈 때", type: 'C' },  
-                { text: "가성비 때문에 먹고 싶은 걸 참을 때", type: 'D' }  
-            ] },  
-            { q: "나만의 힐링공간을 만들어보자! 어떻게 꾸밀까?",   
-            options: [  
-                { text: "암막커튼부터 사야지 어두운 게 최고!", type: 'A' },  
-                { text: "당장 떠날 수 있는 캐리어 들여놓기", type: 'B' },  
-                { text: "일단 집부터 싹~ 정리하고 책도 읽어보자!", type: 'C' },  
-                { text: "마샬스피커, 인센스, 캔들, 조명, 디퓨저, 폭신한 이불, 느좋인 건 다 들여야지", type: 'D' }  
-            ] },  
-            { q: "상상만 해도 가장 힘든 순간은?",   
-            options: [  
-                { text: "모임에서 모르는 사람들이랑 하루종일 대화하는 것", type: 'A' },  
-                { text: "30분 단위 계획표대로 생활하기", type: 'B' },  
-                { text: "누구와도 연락하지 않고 혼자 집에 하는 것이", type: 'C' },  
-                { text: "미리 맛집 안 알아보고 아무데나 들어갔는데 맛 없는 곳이었던 것", type: 'D' }  
-            ] }  
-        ];  
-  
-        const results = {  
-            'A': {   
-                name: "🛌 매일 누워있고 싶어!<br><span class=\"purple-text\">&lt;이불 돌돌말이&gt;</span>",   
-                description: "축하합니다! 햅삐님은 이불과 침대만으로 행복을 누리는 법을 알고 계시군요! 햅삐님의 행복은 외부의 자극을 피해 혼자만의 여유를 가지는 것으로부터 시작됩니다.<br><br>앞으로 햅삐님이 딱 좋아하실만한<br>자휴레터를 보내드릴게요!",  
-                illustration: '🛌',  
-                curation: []   
-            },  
-            'B': {   
-                name: "🚀 일단 옷부터 입자!<br><span class=\"purple-text\">&lt;도파민 헌터&gt;</span>",   
-                description: "햅삐님은 몸을 움직이고 사람을 만날 때 쉰다고 느끼시는군요! 새로운 카페, 처음 보는 사람들과의 만남까지- 집 밖으로 나가면 설레는 것들이 가득!!<br><br>앞으로 햅삐님이 딱 좋아하실만한<br>자휴레터를 보내드릴게요!",  
-                illustration: '🗺️',  
-                curation: []  
-            },  
-            'C': {   
-                name: "📝 즉흥? 그게 모야?<br><span class=\"purple-text\">&lt;파워J 갓생러&gt;</span>",   
-                description: "햅삽님은 깔끔하게 집을 정리하고 하루를 계획하는 데서 기쁨을 느끼시는군요! 그냥 누워있기보다 뭐라도 더 배우고 계획적으로 살 때 더 큰 만족을 느끼는 스타일!<br><br>앞으로 햅삽님이 딱 좋아하실만한<br>자휴레터를 보내드릴게요!",  
-                illustration: '📝',  
-                curation: []  
-            },  
-            'D': {   
-                name: "✨ 호기심 풀충<br><span class=\"purple-text\">&lt;오감만족 큐레이터&gt;</span>",   
-                description: "햅삽님은 팝업스토어, 신상맛집을 다녀오고 직접 경험하는 데서 큰 즐거움을 느끼시는군요! 햅씨와 매우 비슷한 스타일!!(같이 에디터 하실래요?ㅎㅎ)<br><br>앞으로 햅삽님이 딱 좋아하실만한<br>자휴레터를 보내드릴게요!",  
-                illustration: '🎧',  
-                curation: []  
-            }  
-        };  
-  
-        let currentQuestionIndex = 0;  
-        let scores = { 'A': 0, 'B': 0, 'C': 0, 'D': 0 };  
-  
-        function startQuiz() {  
-            document.getElementById('intro-page').style.display = 'none';  
-            document.getElementById('quiz-page').style.display = 'block';  
-            currentQuestionIndex = 0;  
-            scores = { 'A': 0, 'B': 0, 'C': 0, 'D': 0 };  
-            updateBackButtonVisibility();  
-            displayQuestion();  
-        }  
-  
-        function displayQuestion() {  
-            if (currentQuestionIndex >= questions.length) {  
-                showResult();  
-                return;  
-            }  
-  
-            const qData = questions[currentQuestionIndex];  
-            document.getElementById('question-text').textContent = qData.q;  
-            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;  
-  
-            const progress = ((currentQuestionIndex) / questions.length) * 100;  
-            document.getElementById('progress-bar').style.width = `${progress}%`;  
-  
-            const optionsContainer = document.getElementById('options-container');  
-            optionsContainer.innerHTML = '';   
-  
-            qData.options.forEach(option => {  
-                const button = document.createElement('button');  
-                button.textContent = option.text;  
-                button.onclick = () => selectOption(option.type);  
-                optionsContainer.appendChild(button);  
-            });  
-  
-            updateBackButtonVisibility();  
-        }  
-  
-        function selectOption(type) {  
-            scores[type]++;  
-            currentQuestionIndex++;  
-              
-            if (currentQuestionIndex === questions.length) {  
-                document.getElementById('progress-bar').style.width = '100%';  
-            }  
-  
-            setTimeout(displayQuestion, 200);  
-        }  
-  
-        function goBack() {  
-            if (currentQuestionIndex > 0) {  
-                const currentOptions = questions[currentQuestionIndex - 1].options;  
-                currentOptions.forEach(option => {  
-                    if (scores[option.type] > 0) {  
-                        scores[option.type]--;  
-                    }  
-                });  
-                  
-                currentQuestionIndex--;  
-                displayQuestion();  
-            }  
-        }  
-  
-        function updateBackButtonVisibility() {  
-            const backBtn = document.getElementById('back-btn');  
-            if (currentQuestionIndex > 0) {  
-                backBtn.style.display = 'block';  
-            } else {  
-                backBtn.style.display = 'none';  
-            }  
-        }  
-  
-        function determineResult() {  
-            let highestScore = -1;  
-            let resultType = 'A';  
-  
-            for (const type in scores) {  
-                if (scores[type] > highestScore) {  
-                    highestScore = scores[type];  
-                    resultType = type;  
-                }  
-            }  
-            return resultType;  
-        }  
-  
-        function showResult() {  
-            document.getElementById('quiz-page').style.display = 'none';  
-            document.getElementById('result-page').style.display = 'block';  
-  
-            const resultKey = determineResult();  
-            const resultData = results[resultKey];  
-  
-            document.getElementById('result-type-name').innerHTML = resultData.name;  
-            document.getElementById('result-description').innerHTML = resultData.description;  
-            document.getElementById('result-illustration').textContent = resultData.illustration;  
-        }  
-  
-        function goToGift() {  
-            const giftURL = "https://maily.so/happci";  
-            window.open(giftURL, '_blank');  
-            console.log("맞춤형 휴식 선물받기 클릭: ", giftURL);  
-        }  
-          
-        function goToSubscribe() {  
-            const subscribeURL = "http://pf.kakao.com/_Jfjxgn/111753149";  
-            window.open(subscribeURL, '_blank');  
-            console.log("내 스타일 선물받기 클릭: ", subscribeURL);  
-        }  
-  
-        function shareResult() {  
-            const resultKey = determineResult();  
-            const plainResultName = results[resultKey].name.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<br>/g, ' ').replace(/<[^>]*>/g, '').replace(/이불 돌돌말이|도파민 헌터|파워J 갓생러|오감만족 큐레이터/, (match) => match);  
-              
-            const shareURL = "https://maily.so/happci";   
-  
-            const shareText = `저는 ${plainResultName}입니다!😆 당신의 휴식 유형이 궁금하다면 자휴레터 테스트에 참여해보세요! ${shareURL}`;  
-  
-            if (navigator.share) {  
-                navigator.share({  
-                    title: '나의 자휴찾기 테스트 결과',  
-                    text: shareText,  
-                    url: shareURL,  
-                }).catch((error) => console.log('Sharing failed', error));  
-            } else {  
-                navigator.clipboard.writeText(shareText);  
-                alert(`[친구에게 알려주기] 문구가 클립보드에 복사되었습니다!\n\n${shareText}`);  
-            }  
-        }  
-  
-        function restartQuiz() {  
-            document.getElementById('result-page').style.display = 'none';  
-            document.getElementById('intro-page').style.display = 'block';  
-        }  
-    </script>  
-</body>  
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자휴레터 - 힐링이 필요한 당신에게 (V5.0)</title>
+    <meta name="description" content="매일 아침, 따뜻한 이야기가 도착합니다">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'luxury-pink': { 50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6', 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843' },
+                        'luxury-beige': { 50: '#fefdfb', 100: '#fdf9f0', 200: '#faf2e1', 300: '#f5e6c8', 400: '#eed5a3', 500: '#e4c078', 600: '#d4a853', 700: '#b8903c', 800: '#967332', 900: '#7a5e2b' },
+                        'luxury-gold': { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Noto Sans KR', sans-serif; }
+        body { overflow-x: hidden; }
+        .hide { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        .btn-scale:active { transform: scale(0.95); }
+        #adminPanel { position: fixed; top: 0; right: -400px; width: 400px; max-width: 90vw; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.1); transition: right 0.3s ease; z-index: 1000; overflow-y: auto; }
+        #adminPanel.open { right: 0; }
+        #adminOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+        #adminOverlay.show { display: block; }
+        .editor-content { min-height: 200px; padding: 16px; outline: none; border: none; }
+        .editor-content:focus { outline: none; }
+        @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .heart-active { animation: heartBeat 0.3s ease; color: #ec4899 !important; }
+        .heart-filled { color: #ec4899 !important; }
+        .notification { position: fixed; top: 20px; right: 20px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 1001; transform: translateX(400px); transition: transform 0.3s ease; }
+        .notification.show { transform: translateX(0); }
+        #postDetailModal { position: fixed; inset: 0; background: white; z-index: 55; transform: translateY(100%); transition: transform 0.3s ease-out; overflow-y: auto; }
+        #postDetailModal.show { transform: translateY(0); }
+        .disabled-click { cursor: not-allowed; opacity: 0.6; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hide">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-sm mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-luxury-pink-400 to-luxury-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span class="text-2xl">💌</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">자휴레터에 오신 것을 환영합니다</h2>
+                <p class="text-sm text-gray-600">힐링이 필요한 당신을 위한 공간</p>
+            </div>
+            
+            <div id="loginForm">
+                <div class="space-y-4 mb-6">
+                    <input type="email" id="loginEmail" placeholder="이메일 (admin@jahu.com)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                    <input type="password" id="loginPassword" placeholder="비밀번호 (1234)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                </div>
+                <button onclick="login()" class="w-full bg-gradient-to-r from-luxury-pink-400 to-luxury-pink-500 text-white py-3 rounded-xl font-medium mb-4 btn-scale transition-transform">로그인</button>
+                <div class="flex justify-between text-sm">
+                    <button onclick="showSignup()" class="text-luxury-pink-500 font-medium">회원가입</button>
+                    <button onclick="showPasswordReset()" class="text-gray-500 hover:text-luxury-pink-500">비밀번호 찾기</button>
+                </div>
+            </div>
+            
+            <div id="signupForm" class="hide">
+                <div class="space-y-4 mb-6">
+                    <input type="text" id="signupName" placeholder="이름 (혜란)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                    <input type="email" id="signupEmail" placeholder="이메일" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                    <input type="password" id="signupPassword" placeholder="비밀번호" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                    <input type="password" id="signupPasswordConfirm" placeholder="비밀번호 확인" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                </div>
+                <button onclick="signup()" class="w-full bg-gradient-to-r from-luxury-pink-400 to-luxury-pink-500 text-white py-3 rounded-xl font-medium mb-4 btn-scale transition-transform">회원가입</button>
+                <button onclick="showLogin()" class="w-full text-luxury-pink-500 font-medium">로그인으로 돌아가기</button>
+            </div>
+            
+            <div id="passwordResetForm" class="hide">
+                <p class="text-sm text-gray-600 mb-4">가입 시 사용한 이메일을 입력하시면 비밀번호 재설정 링크를 보내드립니다.</p>
+                <div class="space-y-4 mb-6">
+                    <input type="email" id="resetEmail" placeholder="가입 이메일" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                </div>
+                <button onclick="sendPasswordResetEmail()" class="w-full bg-gradient-to-r from-luxury-pink-400 to-luxury-pink-500 text-white py-3 rounded-xl font-medium mb-4 btn-scale transition-transform">이메일로 링크 받기</button>
+                <button onclick="showLogin()" class="w-full text-luxury-pink-500 font-medium">로그인으로 돌아가기</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto bg-white min-h-screen relative" id="app">
+        
+        <header class="sticky top-0 bg-white/95 backdrop-blur-md z-50 border-b border-gray-100">
+             </header>
+
+        <div id="searchModal" class="fixed inset-0 bg-white z-50 hide">
+            </div>
+        
+        <div id="postDetailModal" class="hide">
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md z-10 border-b border-gray-100 p-4 flex items-center">
+                <button onclick="hidePostDetail()" class="p-2 hover:bg-gray-50 rounded-full">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h3 class="flex-1 text-center font-bold text-gray-800" id="detailHeaderTitle">게시글</h3>
+                <div id="postActions" class="flex space-x-2 hide">
+                    <button id="editPostBtn" onclick="editPostStart()" class="text-sm text-gray-600 hover:text-luxury-pink-500 font-medium">수정</button>
+                    <button id="deletePostBtn" onclick="deletePost()" class="text-sm text-red-500 hover:text-red-700 font-medium">삭제</button>
+                </div>
+                <div class="w-16 h-5"></div>
+            </div>
+            
+            <div class="p-6 pb-20">
+                <div class="text-xs text-gray-400 mb-2 flex justify-between items-center">
+                    <span id="detailPostType">커뮤니티</span>
+                    <span id="detailPostDate">2025.01.01</span>
+                </div>
+                <h1 class="text-2xl font-extrabold mb-4 text-gray-800" id="detailPostTitle">제목입니다</h1>
+                <div class="flex items-center space-x-2 mb-6 border-b border-gray-100 pb-4">
+                    <div id="detailPostAvatar" class="w-8 h-8 rounded-full bg-luxury-pink-100 flex items-center justify-center text-luxury-pink-600 font-bold text-sm">H</div>
+                    <span id="detailPostAuthor" class="text-sm font-medium text-gray-700">혜란</span>
+                    <span class="text-sm text-gray-400">| 조회 <span id="detailPostViews">0</span></span>
+                </div>
+                <div class="prose max-w-none text-gray-700 leading-relaxed" id="detailPostContent">내용입니다.</div>
+                
+                <div class="flex items-center space-x-4 mt-8 pt-4 border-t border-gray-100">
+                    <button onclick="toggleLike(currentPostId, 'post')" class="flex items-center space-x-1 text-gray-500 hover:text-luxury-pink-500 transition-colors">
+                        <svg class="w-5 h-5 heart-icon" id="detailLikeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span id="detailPostLikes">0</span>
+                    </button>
+                    <div class="flex items-center space-x-1 text-gray-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z"/></svg>
+                        <span id="detailPostComments">0</span>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-bold text-gray-800 mt-10 mb-4 border-b border-luxury-pink-500 pb-1">댓글</h4>
+                <div id="commentList" class="space-y-6">
+                    </div>
+            </div>
+            
+            <div class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-100 p-4 z-20">
+                <div class="flex space-x-3">
+                    <input type="text" id="commentInput" placeholder="댓글을 입력해주세요..." class="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-luxury-pink-400">
+                    <button onclick="submitComment()" class="bg-luxury-pink-500 text-white px-4 py-2 rounded-full font-medium btn-scale transition-transform">등록</button>
+                </div>
+            </div>
+        </div>
+
+        <main id="mainContent">
+            <section id="homePage" class="p-4 hide fade-in">
+                <h1 class="text-xl font-bold text-gray-800 mb-4">어떤 자휴가 필요하신가요, 햅삐님?</h1>
+                </section>
+            
+            <section id="newsletterPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-luxury-pink-600 mb-6 border-b-4 border-luxury-pink-500 pb-2">당신을 위한 자휴레터</h2>
+                <div id="newsletterList" class="space-y-6">
+                    </div>
+            </section>
+
+            <section id="communityPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b-4 border-luxury-pink-500 pb-2">햅삐님들의 자휴를 나누고 소통해요!</h2>
+                <div id="communityList" class="space-y-4">
+                    </div>
+                <button onclick="showWritePost('community')" class="fixed bottom-20 right-8 bg-luxury-pink-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold btn-scale transition-transform z-30">+</button>
+            </section>
+
+            <section id="editorPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b-4 border-luxury-pink-500 pb-2">에디터 톡톡</h2>
+                <div id="editorTabs" class="flex space-x-2 mb-4 overflow-x-auto pb-2">
+                    </div>
+                <div id="editorList" class="space-y-4">
+                    </div>
+                <button id="editorWriteBtn" onclick="showWritePost('editor')" class="fixed bottom-20 right-8 bg-luxury-gold-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold btn-scale transition-transform z-30 hide">+</button>
+            </section>
+
+            <section id="momentPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b-4 border-luxury-pink-500 pb-2">오늘의 자휴 모먼트</h2>
+                <div id="momentList" class="grid grid-cols-2 gap-4">
+                    </div>
+                <button onclick="showWritePost('moment')" class="fixed bottom-20 right-8 bg-luxury-pink-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold btn-scale transition-transform z-30">+</button>
+            </section>
+            
+            <section id="qnaPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-gray-800 mb-6 border-b-4 border-luxury-pink-500 pb-2">무엇이든 물어보세요 (Q&A)</h2>
+                <div id="qnaList" class="space-y-4">
+                    </div>
+                <button onclick="showWritePost('qna')" class="fixed bottom-20 right-8 bg-luxury-pink-500 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-2xl font-bold btn-scale transition-transform z-30">+</button>
+            </section>
+
+            <section id="myPage" class="p-4 hide fade-in">
+                <h2 class="text-2xl font-extrabold text-luxury-pink-600 mb-6 border-b-4 border-luxury-pink-500 pb-2">햅삐님의 행복을 응원합니다</h2>
+                </section>
+        </main>
+
+        <nav class="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-100 px-6 py-2 z-40">
+            </nav>
+    </div>
+
+    <div id="adminOverlay" onclick="toggleAdmin()"></div>
+    <div id="adminPanel">
+        </div>
+
+    <div id="writePostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-center z-50 hide">
+        <div class="bg-white rounded-t-2xl w-full max-w-md h-5/6 flex flex-col">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800" id="writeModalTitle">글쓰기</h3>
+                <input type="hidden" id="postTypeInput" value="community">
+                <button onclick="hideWritePost()" class="p-2 hover:bg-gray-50 rounded-full">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 flex flex-col">
+                <input type="text" id="postTitle" placeholder="제목을 입력하세요" class="p-4 border-b border-gray-100 focus:outline-none text-lg font-medium">
+                
+                <div class="p-4 flex justify-between items-center border-b border-gray-100" id="postOptions">
+                    <div id="privateOption" class="hide flex items-center space-x-2">
+                        <input type="checkbox" id="isPrivate" class="form-checkbox text-luxury-pink-500 rounded border-gray-300">
+                        <label for="isPrivate" class="text-sm text-gray-700">비밀글 설정</label>
+                    </div>
+                    <div id="imageUploadOption" class="hide">
+                        <input type="file" id="postImage" accept="image/*" class="hide" onchange="previewImage(event)">
+                        <button onclick="document.getElementById('postImage').click()" class="text-sm text-luxury-pink-500 font-medium p-2 border border-luxury-pink-500 rounded-lg hover:bg-luxury-pink-50">
+                            📷 이미지 첨부
+                        </button>
+                    </div>
+                </div>
+
+                <div id="postContent" class="editor-content flex-1" contenteditable="true" placeholder="내용을 입력하세요..."></div>
+                <div id="imagePreview" class="p-4 hide"></div>
+
+                <div class="p-4 border-t border-gray-100">
+                    <button onclick="submitPost()" class="w-full bg-gradient-to-r from-luxury-pink-400 to-luxury-pink-500 text-white py-3 rounded-xl font-medium btn-scale transition-transform">게시하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <h4 id="notificationTitle" class="font-bold">알림</h4>
+        <p id="notificationMessage" class="text-sm">메시지</p>
+    </div>
+
+    <script>
+        // --------------------------------------------------------------------------------------
+        // 1. 🔑 Firebase 설정 (혜란 님의 키로 자동 입력 완료)
+        // --------------------------------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDq2eT8H6tNcsrT8dhZWsEyyMZbpCZIZZQ",
+            authDomain: "jahyu-e24cd.firebaseapp.com",
+            databaseURL: "https://jahyu-e24cd-default-rtdb.firebaseio.com", // 예상 값 사용
+            projectId: "jahyu-e24cd",
+            storageBucket: "jahyu-e24cd.firebasestorage.app",
+            messagingSenderId: "955637836464",
+            appId: "1:955637836464:web:441e7746872d7448fca975"
+        };
+        
+        // ⚠️ 주의: 실제 사용하려면 아래 세 줄의 주석을 반드시 해제해야 합니다.
+        // firebase.initializeApp(firebaseConfig); 
+        // const db = firebase.database();       
+        // const auth = firebase.auth();         
+        // --------------------------------------------------------------------------------------
+
+        const ADMIN_EDITORS = [
+            "hyeran@jahu.com", 
+            "hapssi@jahu.com", 
+            "gokal@jahu.com", 
+            "yudan@jahu.com", 
+            "sunny@jahu.com"
+        ];
+        
+        const EDITOR_NAMES = {
+            "hyeran@jahu.com": "혜란",
+            "hapssi@jahu.com": "햅씨",
+            "gokal@jahu.com": "고칼",
+            "yudan@jahu.com": "유단",
+            "sunny@jahu.com": "써니",
+        };
+
+        let currentUser = null; 
+        let currentPage = 'home';
+        let posts = [];
+        let newsletters = [];
+        let comments = [];
+        let likedItems = {}; 
+        let currentPostId = null; 
+        let currentEditor = null; 
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+        
+        function initializeApp() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+            }
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            updateUserInfo();
+            loadData();
+            navigateTo('home');
+        }
+
+        function isEditor(email) {
+            return ADMIN_EDITORS.includes(email);
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hide');
+            document.getElementById('loginForm').classList.remove('hide');
+            document.getElementById('signupForm').classList.add('hide');
+            document.getElementById('passwordResetForm').classList.add('hide');
+        }
+
+        function showPasswordReset() {
+            document.getElementById('loginForm').classList.add('hide');
+            document.getElementById('signupForm').classList.add('hide');
+            document.getElementById('passwordResetForm').classList.remove('hide');
+        }
+
+        function sendPasswordResetEmail() {
+            const email = document.getElementById('resetEmail').value;
+            if (!email) {
+                showNotification('오류', '이메일을 입력해주세요.');
+                return;
+            }
+            showNotification('안내', `[${email}]로 비밀번호 재설정 링크를 보냈습니다. (실제 기능 아님)`);
+            showLogin();
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            // 임시 로그인 성공 처리 (Firebase 연동 전까지)
+            if (email === "hyeran@jahu.com" && password === "1234") {
+                currentUser = { id: 1, name: "혜란", email: email, isAdmin: isEditor(email) };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                hideLoginModal();
+                navigateTo('home');
+            } else {
+                 showNotification('로그인 실패', '임시 계정: hyeran@jahu.com / 1234');
+            }
+        }
+        
+        function loadData() {
+            posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            newsletters = JSON.parse(localStorage.getItem('newsletters') || '[]');
+            comments = JSON.parse(localStorage.getItem('comments') || '[]');
+            
+            if (!localStorage.getItem('sampleDataLoaded')) {
+                loadSampleData();
+                localStorage.setItem('sampleDataLoaded', 'true');
+                loadData();
+            }
+        }
+
+        function navigateTo(page) {
+            document.querySelectorAll('section[id$="Page"]').forEach(section => section.classList.add('hide'));
+            const targetSection = document.getElementById(page + 'Page');
+            if (targetSection) targetSection.classList.remove('hide');
+            
+            currentPage = page;
+            
+            if (page === 'community') loadCommunityData();
+            else if (page === 'newsletter') loadNewsletterData();
+            else if (page === 'qna') loadQnaData();
+            else if (page === 'moment') loadMomentData();
+            else if (page === 'editor') {
+                setupEditorTabs();
+                const editorWriteBtn = document.getElementById('editorWriteBtn');
+                if (currentUser && isEditor(currentUser.email)) {
+                    editorWriteBtn.classList.remove('hide');
+                } else {
+                    editorWriteBtn.classList.add('hide');
+                }
+            } else if (page === 'mypage') loadMyPageData();
+        }
+        
+        function setupEditorTabs() {
+            const tabsContainer = document.getElementById('editorTabs');
+            tabsContainer.innerHTML = '';
+            
+            const allEditors = ADMIN_EDITORS.map(email => EDITOR_NAMES[email] || email.split('@')[0]);
+            
+            let buttonAll = document.createElement('button');
+            buttonAll.className = `px-3 py-1 rounded-full text-sm font-medium ${currentEditor === null ? 'bg-luxury-pink-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
+            buttonAll.textContent = '전체';
+            buttonAll.onclick = () => filterEditorPosts(null);
+            tabsContainer.appendChild(buttonAll);
+
+            allEditors.forEach(editorName => {
+                let button = document.createElement('button');
+                button.className = `px-3 py-1 rounded-full text-sm font-medium ${currentEditor === editorName ? 'bg-luxury-pink-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
+                button.textContent = editorName;
+                button.onclick = () => filterEditorPosts(editorName);
+                tabsContainer.appendChild(button);
+            });
+            
+            loadEditorData();
+        }
+
+        function filterEditorPosts(editorName) {
+            currentEditor = editorName;
+            setupEditorTabs();
+            loadEditorData();
+        }
+
+        function loadEditorData() {
+            const editorList = document.getElementById('editorList');
+            editorList.innerHTML = '';
+            
+            const filteredPosts = posts.filter(p => p.type === 'editor' && (currentEditor === null || p.author === currentEditor));
+            
+            filteredPosts.forEach(post => {
+                editorList.appendChild(renderPostItem(post));
+            });
+        }
+        
+        function previewImage(event) {
+            const [file] = event.target.files;
+            const previewDiv = document.getElementById('imagePreview');
+            
+            if (file) {
+                const url = URL.createObjectURL(file);
+                previewDiv.innerHTML = `<img src="${url}" class="mt-4 max-h-48 w-full object-cover rounded-lg border border-gray-100">`;
+                previewDiv.classList.remove('hide');
+                showNotification('안내', '이미지가 첨부되었습니다.');
+            } else {
+                previewDiv.classList.add('hide');
+                previewDiv.innerHTML = '';
+            }
+        }
+        
+        function showWritePost(type = 'community', post = null) {
+            document.getElementById('postTypeInput').value = type;
+            const titleElement = document.getElementById('writeModalTitle');
+            
+            document.getElementById('postTypeInput').removeAttribute('data-editing-id');
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').innerHTML = '';
+            
+            const privateOption = document.getElementById('privateOption');
+            const imageUploadOption = document.getElementById('imageUploadOption');
+            const postTitle = document.getElementById('postTitle');
+            
+            privateOption.classList.add('hide');
+            imageUploadOption.classList.add('hide');
+            postTitle.classList.remove('hide');
+            document.getElementById('imagePreview').classList.add('hide');
+            document.getElementById('postImage').value = ''; 
+
+            if (type === 'qna') {
+                privateOption.classList.remove('hide');
+                document.getElementById('isPrivate').checked = post?.isPrivate || false;
+            } else if (type === 'moment') {
+                imageUploadOption.classList.remove('hide');
+                postTitle.classList.add('hide');
+                titleElement.textContent = '모먼트 남기기';
+            } else {
+                titleElement.textContent = '글쓰기';
+            }
+            
+            if (post) {
+                document.getElementById('postTypeInput').setAttribute('data-editing-id', post.id);
+                document.getElementById('postTitle').value = post.title;
+                document.getElementById('postContent').innerHTML = post.content;
+                titleElement.textContent = `게시글 수정 (${post.type.toUpperCase()})`;
+            }
+            
+            document.getElementById('writePostModal').classList.remove('hide');
+        }
+
+        function submitPost() {
+            const postType = document.getElementById('postTypeInput').value;
+            const isEditing = document.getElementById('postTypeInput').getAttribute('data-editing-id');
+            const isPrivate = postType === 'qna' ? document.getElementById('isPrivate').checked : false;
+            
+            const content = document.getElementById('postContent').innerHTML.trim() || document.getElementById('postContent').textContent.trim();
+            const title = postType === 'moment' ? '모먼트' : document.getElementById('postTitle').value;
+            
+            if (!content || (!title && postType !== 'moment')) {
+                showNotification('알림', '제목과 내용을 입력해주세요.');
+                return;
+            }
+            
+            if (isEditing) {
+                const postId = parseInt(isEditing);
+                const postIndex = posts.findIndex(p => p.id === postId);
+                
+                if (postIndex !== -1) {
+                    posts[postIndex].title = title;
+                    posts[postIndex].content = content;
+                    posts[postIndex].date = new Date().toISOString(); 
+                    posts[postIndex].isPrivate = isPrivate; 
+                    
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    showNotification('수정 완료', '게시글이 성공적으로 수정되었습니다.');
+                }
+            } else {
+                const newPost = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    author: currentUser.name,
+                    authorId: currentUser.id,
+                    date: new Date().toISOString(),
+                    likes: 0,
+                    comments: 0,
+                    type: postType,
+                    isPrivate: isPrivate,
+                    imageUrl: postType === 'moment' && document.getElementById('postImage').files[0] ? 'TEMP_IMAGE_URL' : null 
+                };
+                
+                posts.unshift(newPost);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                showNotification('게시 완료!', `${title} 글이 성공적으로 게시되었습니다.`);
+            }
+            
+            hideWritePost();
+            navigateTo(postType);
+        }
+
+        function showPostDetail(postId, event) {
+            if (event) event.stopPropagation();
+            currentPostId = postId;
+            
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            if (!currentUser && post.type !== 'newsletter') {
+                showNotification('접근 제한', '로그인 후 상세 내용을 볼 수 있습니다.');
+                return;
+            }
+            
+            if (post.isPrivate) {
+                const isAuthorOrEditor = post.authorId === currentUser?.id || isEditor(currentUser?.email);
+                if (!isAuthorOrEditor) {
+                    showNotification('접근 제한', '비밀글은 작성자 또는 관리자(에디터)만 열람 가능합니다.');
+                    return;
+                }
+            }
+
+            updatePostActions(post);
+
+            document.getElementById('postDetailModal').classList.remove('hide');
+            setTimeout(() => document.getElementById('postDetailModal').classList.add('show'), 10);
+        }
+
+        function updatePostActions(post) {
+            const postActions = document.getElementById('postActions');
+            if (currentUser && (post.authorId === currentUser.id || isEditor(currentUser.email))) {
+                postActions.classList.remove('hide');
+            } else {
+                postActions.classList.add('hide');
+            }
+        }
+
+        function editPostStart() {
+            const post = posts.find(p => p.id === currentPostId);
+            if (!post) return;
+            
+            hidePostDetail();
+            showWritePost(post.type, post); 
+        }
+
+        function deletePost() {
+            if (!currentPostId || !confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+            
+            posts = posts.filter(p => p.id !== currentPostId);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            
+            hidePostDetail();
+            navigateTo(currentPage);
+            showNotification('삭제 완료', '게시글이 성공적으로 삭제되었습니다.');
+        }
+
+        function renderPostItem(post) {
+            const item = document.createElement('article');
+            item.className = 'p-4 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col space-y-2 fade-in';
+            
+            let isClickable = true;
+            let iconHtml = '';
+            
+            if (post.type !== 'newsletter' && !currentUser) {
+                isClickable = false;
+                item.classList.add('disabled-click');
+            }
+
+            if (post.type === 'qna' && post.isPrivate) {
+                iconHtml = '<span class="text-luxury-pink-500 mr-2">🔒</span>';
+            }
+            
+            let imageHtml = post.type === 'moment' && post.imageUrl ? `<img src="${post.imageUrl}" class="mt-2 max-h-32 w-full object-cover rounded-lg">` : '';
+
+            item.innerHTML = `
+                <div class="text-sm font-medium text-gray-800 flex items-center">
+                    ${iconHtml}${post.title}
+                </div>
+                ${imageHtml}
+                <div class="text-xs text-gray-500 line-clamp-2">${post.content.replace(/<[^>]*>?/gm, '').substring(0, 100)}</div>
+                <div class="flex justify-between items-center text-xs text-gray-400 pt-1">
+                    <span>${post.author} | ${formatDate(post.date)}</span>
+                    <span>좋아요 ${post.likes}</span>
+                </div>
+            `;
+            
+            if (isClickable) {
+                item.onclick = (e) => showPostDetail(post.id, e);
+            }
+
+            return item;
+        }
+
+        function loadCommunityData() { /* ... */ }
+        function loadNewsletterData() { /* ... */ }
+        function loadQnaData() { /* ... */ }
+        function loadMomentData() { /* ... */ }
+        function loadMyPageData() { /* ... */ }
+        function loadSampleData() { /* ... */ }
+
+        function hideLoginModal() { document.getElementById('loginModal').classList.add('hide'); }
+        function showSignup() { document.getElementById('loginForm').classList.add('hide'); document.getElementById('signupForm').classList.remove('hide'); }
+        function showLogin() { document.getElementById('loginForm').classList.remove('hide'); document.getElementById('signupForm').classList.add('hide'); document.getElementById('passwordResetForm').classList.add('hide'); }
+        function signup() { /* ... */ }
+        function updateUserInfo() { /* ... */ }
+        function toggleLike(id, type) { /* ... */ }
+        function submitComment() { /* ... */ }
+        function loadPostComments(postId) { /* ... */ }
+        function hidePostDetail() { document.getElementById('postDetailModal').classList.remove('show'); setTimeout(() => document.getElementById('postDetailModal').classList.add('hide'), 300); }
+        function hideWritePost() { document.getElementById('writePostModal').classList.add('hide'); }
+        function formatDate(dateString) { return dateString.substring(0, 10).replace(/-/g, '.'); }
+        function showNotification(title, message) { 
+            const n = document.getElementById('notification');
+            document.getElementById('notificationTitle').textContent = title;
+            document.getElementById('notificationMessage').textContent = message;
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 3000);
+        }
+        function toggleAdmin() { /* ... */ }
+    </script>
+</body>
 </html>
